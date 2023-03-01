@@ -7,16 +7,16 @@ import javax.swing.table.DefaultTableModel;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-
 /**
  *
  * @author Imanu
  */
 public class adminPeminjaman extends javax.swing.JFrame {
-    
+
     public Statement st;
     public ResultSet rs;
     Connection conn = connection.connection.openConnection();
+
     /**
      * Creates new form adminPeminjaman
      */
@@ -24,14 +24,14 @@ public class adminPeminjaman extends javax.swing.JFrame {
         initComponents();
         showLendingsData();
     }
-    
-    public void searchLendingsData(){
-        try{
+
+    public void searchLendingsData() {
+        try {
             st = conn.createStatement();
             rs = st.executeQuery("SELECT users.name,books.title,lendings.* FROM lendings "
                     + "INNER JOIN users ON lendings.user_id=users.id "
                     + "INNER JOIN books ON lendings.book_id=books.id "
-                    + "WHERE name LIKE '%" + user_name.getText() + "%' AND title LIKE '%" + book_title.getText() + "%'" );
+                    + "WHERE name LIKE '%" + user_name.getText() + "%' AND title LIKE '%" + book_title.getText() + "%'");
             DefaultTableModel model = new DefaultTableModel();
 //            model.addColumn("no");
             model.addColumn("id");
@@ -41,15 +41,14 @@ public class adminPeminjaman extends javax.swing.JFrame {
             model.addColumn("amount");
             model.addColumn("start_of_lend");
             model.addColumn("end_of_lend");
-            
+
 //            int no = 1;
-            
             model.getDataVector().removeAllElements();
             model.fireTableDataChanged();
             model.setRowCount(0);
-            while(rs.next()){
+            while (rs.next()) {
                 String lendingStatus = rs.getString("status");
-                switch(lendingStatus) {
+                switch (lendingStatus) {
                     case "0":
                         lendingStatus = "Ditolak";
                         break;
@@ -70,20 +69,20 @@ public class adminPeminjaman extends javax.swing.JFrame {
                     lendingStatus,
                     rs.getString("amount"),
                     rs.getString("start_of_lend"),
-                    rs.getString("end_of_lend"),
-                };
+                    rs.getString("end_of_lend"),};
                 model.addRow(data);
                 lendings_table.setModel(model);
             }
-            
-        } catch(Exception e){
+
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e, "Validasi data", JOptionPane.INFORMATION_MESSAGE);
         }
     }
-    public void showLendingsData(){
-        try{
+
+    public void showLendingsData() {
+        try {
             st = conn.createStatement();
-            rs = st.executeQuery("SELECT users.name,books.title,lendings.* FROM lendings INNER JOIN users ON lendings.user_id=users.id INNER JOIN books ON lendings.book_id=books.id ");
+            rs = st.executeQuery("SELECT u.name,b.title,l.* FROM lendings l INNER JOIN users u ON l.user_id=u.id INNER JOIN books b ON l.book_id=b.id ");
             DefaultTableModel model = new DefaultTableModel();
 //            model.addColumn("no");
             model.addColumn("id");
@@ -93,14 +92,14 @@ public class adminPeminjaman extends javax.swing.JFrame {
             model.addColumn("amount");
             model.addColumn("start_of_lend");
             model.addColumn("end_of_lend");
-            
+
 //            int no = 1;
             model.getDataVector().removeAllElements();
             model.fireTableDataChanged();
             model.setRowCount(0);
-            while(rs.next()){
+            while (rs.next()) {
                 String lendingStatus = rs.getString("status");
-                switch(lendingStatus) {
+                switch (lendingStatus) {
                     case "0":
                         lendingStatus = "Ditolak";
                         break;
@@ -121,16 +120,16 @@ public class adminPeminjaman extends javax.swing.JFrame {
                     lendingStatus,
                     rs.getString("amount"),
                     rs.getString("start_of_lend"),
-                    rs.getString("end_of_lend"),
-                };
+                    rs.getString("end_of_lend"),};
                 model.addRow(data);
                 lendings_table.setModel(model);
             }
-            
-        } catch(Exception e){
+
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e, "Validasi data", JOptionPane.INFORMATION_MESSAGE);
-        } 
+        }
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -358,17 +357,17 @@ public class adminPeminjaman extends javax.swing.JFrame {
                 String sql = "UPDATE lendings SET status = 2 WHERE id = " + clicked_id;
                 st.executeUpdate(sql);
                 JOptionPane.showMessageDialog(null, "berhasi;");
-                showLendingsData();                
-            } catch(Exception e){
+                showLendingsData();
+            } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, e);
             }
-        } else if( confirmation == 1){
+        } else if (confirmation == 1) {
             try {
                 String sql = "UPDATE lendings SET status = 0 WHERE id = " + clicked_id;
                 st.executeUpdate(sql);
                 JOptionPane.showMessageDialog(null, "berhasil");
-                showLendingsData();                
-            } catch(Exception e){
+                showLendingsData();
+            } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, e);
             }
         }

@@ -8,14 +8,14 @@
  * @author Imanu
  */
 import java.sql.*;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+
 public class adminTambahBuku extends javax.swing.JFrame {
 
     /**
@@ -24,23 +24,23 @@ public class adminTambahBuku extends javax.swing.JFrame {
     public Statement st;
     public ResultSet rs;
     Connection conn = connection.connection.openConnection();
-    
+
     public adminTambahBuku() {
         initComponents();
         showData();
     }
-    
-    private void clear(){
+
+    private void clear() {
         title.setText("");
         isbn.setText("");
-        genre.setText("");
+        tags.setText("");
         publisher.setText("");
         author.setText("");
         remaining_books.setText("");
     }
-    
-    private void dataSearch(){
-        try{
+
+    private void dataSearch() {
+        try {
             st = conn.createStatement();
             rs = st.executeQuery("SELECT * FROM books WHERE " + search_option.getSelectedItem() + " LIKE '%" + search.getText() + "%'");
             DefaultTableModel model = new DefaultTableModel();
@@ -49,41 +49,40 @@ public class adminTambahBuku extends javax.swing.JFrame {
             model.addColumn("book_type");
             model.addColumn("title");
             model.addColumn("isbn");
-            model.addColumn("genre");
+            model.addColumn("tags");
             model.addColumn("release_date");
             model.addColumn("publisher");
             model.addColumn("author");
             model.addColumn("remaining_books");
 //            int no = 1;
-            
+
             model.getDataVector().removeAllElements();
             model.fireTableDataChanged();
             model.setRowCount(0);
-            while(rs.next()){
+            while (rs.next()) {
                 String type = rs.getBoolean("book_type") ? "akademik" : "non_akademik";
                 Object[] data = {
-//                   no ++,
-                  rs.getString("id"),
-                  type,
-                  rs.getString("title"),
-                  rs.getString("isbn"),
-                  rs.getString("genre"),
-                  rs.getString("release_date"),
-                  rs.getString("publisher"),                  
-                  rs.getString("author"),                   
-                  rs.getString("remaining_books"),
-                };
+                    //                   no ++,
+                    rs.getString("id"),
+                    type,
+                    rs.getString("title"),
+                    rs.getString("isbn"),
+                    rs.getString("tags"),
+                    rs.getString("release_date"),
+                    rs.getString("publisher"),
+                    rs.getString("author"),
+                    rs.getString("remaining_books"),};
                 model.addRow(data);
                 book_table.setModel(model);
             }
-            
-        } catch(Exception e){
-            JOptionPane.showMessageDialog(null, e, "Validasi data", JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
         }
     }
-    
-    private void showData(){
-        try{
+
+    private void showData() {
+        try {
             st = conn.createStatement();
             rs = st.executeQuery("SELECT * FROM books");
             DefaultTableModel model = new DefaultTableModel();
@@ -92,35 +91,34 @@ public class adminTambahBuku extends javax.swing.JFrame {
             model.addColumn("book_type");
             model.addColumn("title");
             model.addColumn("isbn");
-            model.addColumn("genre");
+            model.addColumn("tags");
             model.addColumn("release_date");
             model.addColumn("publisher");
             model.addColumn("author");
             model.addColumn("remaining_books");
 //            int no = 1;
-            
+
             model.getDataVector().removeAllElements();
             model.fireTableDataChanged();
             model.setRowCount(0);
-            while(rs.next()){
+            while (rs.next()) {
                 String type = rs.getBoolean("book_type") ? "akademik" : "non_akademik";
                 Object[] data = {
-//                   no ++,
-                  rs.getString("id"),
-                  type,
-                  rs.getString("title"),
-                  rs.getString("isbn"),
-                  rs.getString("genre"),
-                  rs.getString("release_date"),
-                  rs.getString("publisher"),                  
-                  rs.getString("author"),                   
-                  rs.getString("remaining_books"),
-                };
+                    //                   no ++,
+                    rs.getString("id"),
+                    type,
+                    rs.getString("title"),
+                    rs.getString("isbn"),
+                    rs.getString("tags"),
+                    rs.getString("release_date"),
+                    rs.getString("publisher"),
+                    rs.getString("author"),
+                    rs.getString("remaining_books"),};
                 model.addRow(data);
                 book_table.setModel(model);
             }
-            
-        } catch(Exception e){
+
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e, "Validasi data", JOptionPane.INFORMATION_MESSAGE);
         }
     }
@@ -148,7 +146,7 @@ public class adminTambahBuku extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         isbn = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        genre = new javax.swing.JTextField();
+        tags = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         publisher = new javax.swing.JTextField();
@@ -266,7 +264,7 @@ public class adminTambahBuku extends javax.swing.JFrame {
 
         jLabel3.setText("isbn");
 
-        jLabel4.setText("genre");
+        jLabel4.setText("tags");
 
         jLabel5.setText("release_date");
 
@@ -335,7 +333,7 @@ public class adminTambahBuku extends javax.swing.JFrame {
                     .addComponent(jLabel4))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(genre, javax.swing.GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE)
+                    .addComponent(tags, javax.swing.GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE)
                     .addComponent(title)
                     .addComponent(isbn, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(book_type, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -399,7 +397,7 @@ public class adminTambahBuku extends javax.swing.JFrame {
                     .addComponent(jLabel8)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel4)
-                        .addComponent(genre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(tags, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(save)
@@ -418,48 +416,48 @@ public class adminTambahBuku extends javax.swing.JFrame {
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
         // TODO add your handling code here:
-        try{
+        try {
             st = conn.createStatement();
-            if(title.getText().equals("") || 
-                    isbn.getText().equals("") || 
-                    genre.getText().equals("") ||
-                    publisher.getText().equals("") ||
-                    author.getText().equals("")|| 
-                    remaining_books.getText().equals("")){
+            if (title.getText().equals("")
+                    || isbn.getText().equals("")
+                    || tags.getText().equals("")
+                    || publisher.getText().equals("")
+                    || author.getText().equals("")
+                    || remaining_books.getText().equals("")) {
                 JOptionPane.showMessageDialog(null, "data tidak lengkap", "Validasi data", JOptionPane.INFORMATION_MESSAGE);
                 return;
             }
-            if(save.getText().equals("Save")){
+            if (save.getText().equals("Save")) {
                 String check = "SELECT * FROM books WHERE title = '" + title.getText() + "'";
                 rs = st.executeQuery(check);
-                if(rs.next()){
+                if (rs.next()) {
                     JOptionPane.showMessageDialog(null, "Title already used");
                 } else {
-                    try{
+                    try {
 //                        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
                         String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
                         String the_release = new SimpleDateFormat("yyyy-MM-dd").format(release_date.getDate());
-                        Integer converted_book_type = book_type.getSelectedItem().equals("akademik") ? 1 : 0 ;
-                        String sql = "INSERT INTO books (created_at,updated_at,book_type,title,isbn,genre,release_date,publisher,author,remaining_books) VALUES(" +
-                                "'" + timeStamp + "'," + 
-                                "'" + timeStamp + "'," + 
-                                converted_book_type +
-                                ",'" + title.getText() +
-                                "','" + isbn.getText() +
-                                "','" + genre.getText() + 
-                                "','" + the_release + 
-                                "','" + publisher.getText() + 
-                                "','" + author.getText() + 
-                                "','" + Integer.valueOf(remaining_books.getText()) + "')";
-                         st.executeUpdate(sql);
-                         JOptionPane.showMessageDialog(null, "Data berhasil disimpan");
-                         showData();
-                         clear();
-                    } catch(Exception e) {
+                        Integer converted_book_type = book_type.getSelectedItem().equals("akademik") ? 1 : 0;
+                        String sql = "INSERT INTO books (created_at,updated_at,book_type,title,isbn,tags,release_date,publisher,author,remaining_books) VALUES("
+                                + "'" + timeStamp + "',"
+                                + "'" + timeStamp + "',"
+                                + converted_book_type
+                                + ",'" + title.getText()
+                                + "','" + isbn.getText()
+                                + "','" + tags.getText()
+                                + "','" + the_release
+                                + "','" + publisher.getText()
+                                + "','" + author.getText()
+                                + "','" + Integer.valueOf(remaining_books.getText()) + "')";
+                        st.executeUpdate(sql);
+                        JOptionPane.showMessageDialog(null, "Data berhasil disimpan");
+                        showData();
+                        clear();
+                    } catch (Exception e) {
                         JOptionPane.showMessageDialog(null, e);
                     }
                 }
-            } else if(save.getText().equals("Update")){
+            } else if (save.getText().equals("Update")) {
                 try {
                     String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
                     String the_release = new SimpleDateFormat("yyyy-MM-dd").format(release_date.getDate());
@@ -468,7 +466,7 @@ public class adminTambahBuku extends javax.swing.JFrame {
                             + "book_type = " + converted_book_type + ", "
                             + "title = '" + title.getText() + "', "
                             + "isbn = '" + isbn.getText() + "', "
-                            + "genre = '" + genre.getText() + "', "
+                            + "tags = '" + tags.getText() + "', "
                             + "release_date = '" + the_release + "', "
                             + "publisher = '" + publisher.getText() + "', "
                             + "author = '" + author.getText() + "', "
@@ -479,11 +477,11 @@ public class adminTambahBuku extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(null, "data berhasil diubah");
                     showData();
                     clear();
-                } catch(Exception e){
+                } catch (Exception e) {
                     JOptionPane.showMessageDialog(null, e);
                 }
             }
-        } catch(Exception e){
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
     }//GEN-LAST:event_saveActionPerformed
@@ -500,43 +498,40 @@ public class adminTambahBuku extends javax.swing.JFrame {
 
     private void book_tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_book_tableMouseClicked
 //         TODO add your handling code here:
-        int book_type_index = (book_table.getValueAt(book_table.getSelectedRow(),1).toString() == "akademik" ) ? 0 : 1;
+        int book_type_index = (book_table.getValueAt(book_table.getSelectedRow(), 1).toString().equals("akademik")) ? 0 : 1;
         book_type.setSelectedIndex(book_type_index);
-        title.setText(book_table.getValueAt(book_table.getSelectedRow(),2).toString());
-        isbn.setText(book_table.getValueAt(book_table.getSelectedRow(),3).toString());
-        genre.setText(book_table.getValueAt(book_table.getSelectedRow(),4).toString());
-        
-        String get_release_date = book_table.getValueAt(book_table.getSelectedRow(),5).toString();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate converted_release_date = LocalDate.parse(get_release_date,formatter);
-        ZoneId systemTimeZone = ZoneId.systemDefault();
-        ZonedDateTime zonedDateTime = converted_release_date.atStartOfDay(systemTimeZone);
-        java.util.Date utilDate = Date.from( zonedDateTime.toInstant());
-        release_date.setDate(utilDate);
-//        System.out.println(book_table.getValueAt(book_table.getSelectedRow(),5));
-        publisher.setText(book_table.getValueAt(book_table.getSelectedRow(),6).toString());
-        author.setText(book_table.getValueAt(book_table.getSelectedRow(),7).toString());
-        remaining_books.setText(book_table.getValueAt(book_table.getSelectedRow(),8).toString());
-        
+        title.setText(book_table.getValueAt(book_table.getSelectedRow(), 2).toString());
+        isbn.setText(book_table.getValueAt(book_table.getSelectedRow(), 3).toString());
+        tags.setText(book_table.getValueAt(book_table.getSelectedRow(), 4).toString());
+
+        try {
+            release_date.setDate(new SimpleDateFormat("yyyy-MM-dd").parse(book_table.getValueAt(book_table.getSelectedRow(), 5).toString()));
+        } catch (ParseException ex) {
+            Logger.getLogger(adminTambahBuku.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        publisher.setText(book_table.getValueAt(book_table.getSelectedRow(), 6).toString());
+        author.setText(book_table.getValueAt(book_table.getSelectedRow(), 7).toString());
+        remaining_books.setText(book_table.getValueAt(book_table.getSelectedRow(), 8).toString());
+
         save.setText("Update");
-        
+
     }//GEN-LAST:event_book_tableMouseClicked
 
     private void deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteActionPerformed
         // TODO add your handling code here:
-        if(title.getText().equals("")){
-            JOptionPane.showMessageDialog(null,"Mauh hapus apa?");
+        if (title.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Mauh hapus apa?");
         } else {
             int jawab = JOptionPane.showConfirmDialog(null, "Yakin menghapus data?", "konfirmasi", JOptionPane.YES_NO_OPTION);
-            if(jawab == 0){
-                try{
+            if (jawab == 0) {
+                try {
                     st = conn.createStatement();
                     String sql = "DELETE FROM books WHERE id = '" + book_table.getValueAt(book_table.getSelectedRow(), 0) + "'";
                     st.executeUpdate(sql);
                     JOptionPane.showMessageDialog(null, "Data berhasil dihapus");
                     showData();
                     clear();
-                } catch(Exception e){
+                } catch (Exception e) {
                     JOptionPane.showMessageDialog(null, e);
                 }
             } else {
@@ -556,9 +551,9 @@ public class adminTambahBuku extends javax.swing.JFrame {
     }//GEN-LAST:event_searchKeyReleased
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       adminPustakawan adminPustakawan1 = new adminPustakawan();
-       adminPustakawan1.setVisible(true);
-       this.dispose();
+        adminPustakawan adminPustakawan1 = new adminPustakawan();
+        adminPustakawan1.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void userActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userActionPerformed
@@ -566,41 +561,41 @@ public class adminTambahBuku extends javax.swing.JFrame {
         adminpenPengguna1.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_userActionPerformed
-    
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(adminTambahBuku.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(adminTambahBuku.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(adminTambahBuku.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(adminTambahBuku.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new adminTambahBuku().setVisible(true);
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(adminTambahBuku.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(adminTambahBuku.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(adminTambahBuku.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(adminTambahBuku.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new adminTambahBuku().setVisible(true);
+//            }
+//        });  
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField author;
@@ -608,7 +603,6 @@ public class adminTambahBuku extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> book_type;
     private javax.swing.JButton cancel;
     private javax.swing.JButton delete;
-    private javax.swing.JTextField genre;
     private javax.swing.JTextField isbn;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
@@ -630,6 +624,7 @@ public class adminTambahBuku extends javax.swing.JFrame {
     private javax.swing.JButton save;
     private javax.swing.JTextField search;
     private javax.swing.JComboBox<String> search_option;
+    private javax.swing.JTextField tags;
     private javax.swing.JTextField title;
     private javax.swing.JButton user;
     // End of variables declaration//GEN-END:variables

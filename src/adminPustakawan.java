@@ -13,81 +13,83 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class adminPustakawan extends javax.swing.JFrame {
+
     public Statement st;
     public ResultSet rs;
     Connection conn = connection.connection.openConnection();
+
     /**
      * Creates new form adminPustakawan
      */
-    public adminPustakawan() {  
+    public adminPustakawan() {
         initComponents();
-        showLibrariansData();    
+        showLibrariansData();
     }
-    public void clean(){
+
+    public void clean() {
         number.setText("");
         name.setText("");
         password.setText("");
     }
-    
-    public void searchLibrariansData(){
-        try{
+
+    public void searchLibrariansData() {
+        try {
             st = conn.createStatement();
             rs = st.executeQuery("SELECT * FROM users WHERE role = 'Pustakawan' AND " + search_option.getSelectedItem().toString() + " LIKE '%" + search.getText() + "%'");
             DefaultTableModel model = new DefaultTableModel();
-            
+
             model.addColumn("id");
             model.addColumn("nama");
             model.addColumn("number");
             model.addColumn("number_type");
             model.addColumn("password");
-            
+
             model.getDataVector();
             model.fireTableDataChanged();
             model.setRowCount(0);
-            
-            while( rs.next()){
+
+            while (rs.next()) {
                 Object[] data = {
-                  rs.getString("id"),
-                  rs.getString("name"),
-                  rs.getString("number"),
-                  rs.getString("number_type"),
-                  rs.getString("password"),
-                };
+                    rs.getString("id"),
+                    rs.getString("name"),
+                    rs.getString("number"),
+                    rs.getString("number_type"),
+                    rs.getString("password"),};
                 model.addRow(data);
                 librarians_table.setModel(model);
             }
-        } catch(Exception e){
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
     }
-    public void showLibrariansData(){
-        try{
+
+    public void showLibrariansData() {
+        try {
             st = conn.createStatement();
             rs = st.executeQuery("SELECT * FROM users WHERE role = 'Pustakawan'");
             DefaultTableModel model = new DefaultTableModel();
-            
+
             model.addColumn("id");
             model.addColumn("nama");
             model.addColumn("number");
             model.addColumn("number_type");
             model.addColumn("password");
-            
+
             model.getDataVector();
             model.fireTableDataChanged();
             model.setRowCount(0);
-            
-            while( rs.next()){
+
+            while (rs.next()) {
                 Object[] data = {
-                  rs.getString("id"),
-                  rs.getString("name"),
-                  rs.getString("number"),
-                  rs.getString("number_type"),
-                  rs.getString("password"),
-                };
+                    rs.getString("id"),
+                    rs.getString("name"),
+                    rs.getString("number"),
+                    rs.getString("number_type"),
+                    rs.getString("password"),};
                 model.addRow(data);
                 librarians_table.setModel(model);
             }
-        } catch(Exception e){
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
     }
@@ -365,13 +367,13 @@ public class adminPustakawan extends javax.swing.JFrame {
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
         try {
             st = conn.createStatement();
-            if( number.getText().equals("") || name.getText().equals("") || new String(password.getPassword()).equals("")){
+            if (number.getText().equals("") || name.getText().equals("") || new String(password.getPassword()).equals("")) {
                 JOptionPane.showMessageDialog(null, "data tidak lengkap");
-            } else{
-                if(save.getText().equals("Save")){
+            } else {
+                if (save.getText().equals("Save")) {
                     String check = "SELECT * FROM users WHERE number = " + number.getText();
                     rs = st.executeQuery(check);
-                    if(rs.next()){
+                    if (rs.next()) {
                         JOptionPane.showMessageDialog(null, "number is already used");
                     } else {
                         try {
@@ -385,38 +387,38 @@ public class adminPustakawan extends javax.swing.JFrame {
                             JOptionPane.showMessageDialog(null, "berhasil");
                             showLibrariansData();
                             clean();
-                        } catch(Exception e) {
+                        } catch (Exception e) {
                             JOptionPane.showMessageDialog(null, e);
                         }
                     }
-                } else if(save.getText().equals("Update")){
+                } else if (save.getText().equals("Update")) {
                     try {
                         String hashedPassword = BCrypt.hashpw(new String(password.getPassword()), BCrypt.gensalt(10));
                         String sql = "UPDATE users SET number = "
                                 + number.getText() + ", number_type = '"
-                                + number_type.getSelectedItem()+ "', name ='"
+                                + number_type.getSelectedItem() + "', name ='"
                                 + name.getText() + "', password = '"
-                                + hashedPassword + "' WHERE id =" + librarians_table.getValueAt(librarians_table.getSelectedRow(),0).toString();
+                                + hashedPassword + "' WHERE id =" + librarians_table.getValueAt(librarians_table.getSelectedRow(), 0).toString();
                         st.executeUpdate(sql);
                         JOptionPane.showMessageDialog(null, "berhasil");
                         showLibrariansData();
                         clean();
                         save.setText("Save");
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         JOptionPane.showMessageDialog(null, e);
                     }
                 }
             }
-        } catch(Exception e){
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
     }//GEN-LAST:event_saveActionPerformed
 
     private void librarians_tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_librarians_tableMouseClicked
-        name.setText(librarians_table.getValueAt(librarians_table.getSelectedRow(),1).toString());
+        name.setText(librarians_table.getValueAt(librarians_table.getSelectedRow(), 1).toString());
         number.setText(librarians_table.getValueAt(librarians_table.getSelectedRow(), 2).toString());
-        number_type.setSelectedItem(librarians_table.getValueAt(librarians_table.getSelectedRow(),3).toString());
-        
+        number_type.setSelectedItem(librarians_table.getValueAt(librarians_table.getSelectedRow(), 3).toString());
+
         save.setText("Update");
     }//GEN-LAST:event_librarians_tableMouseClicked
 
